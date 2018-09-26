@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">My Mapbox Application</string>
     <string name="access_token">***REMOVED***</string>
+    <string name="abrir_camera">Abrir Câmera</string>
 </resources>
