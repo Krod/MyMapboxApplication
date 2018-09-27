@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_streets"
+        android:title="@string/menu_streets"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_dark"
+        app:showAsAction="never"
+        android:title="@string/menu_dark" />
+    <item
+        android:id="@+id/menu_light"
+        app:showAsAction="never"
+        android:title="@string/menu_light" />
+    <item
+        android:id="@+id/menu_outdoors"
+        app:showAsAction="never"
+        android:title="@string/menu_outdoors" />
+    <item
+        android:id="@+id/menu_satellite"
+        app:showAsAction="never"
+        android:title="@string/menu_satellite" />
+    <item
+        android:id="@+id/menu_satellite_streets"
+        app:showAsAction="never"
+        android:title="@string/menu_satellitestreets" />
+</menu>

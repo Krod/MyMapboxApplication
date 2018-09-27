@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         mapView.onDestroy();
     }
 
-/*
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_map_style, menu);
@@ -137,5 +137,4 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    */
 }

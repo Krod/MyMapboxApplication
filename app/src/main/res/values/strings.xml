@@ -2,4 +2,10 @@
     <string name="app_name">My Mapbox Application</string>
     <string name="access_token">***REMOVED***</string>
     <string name="abrir_camera">Abrir Câmera</string>
+    <string name="menu_streets">Streets</string>
+    <string name="menu_dark">Dark</string>
+    <string name="menu_light">Light</string>
+    <string name="menu_outdoors">Outdoors</string>
+    <string name="menu_satellite">Satellite</string>
+    <string name="menu_satellitestreets">Satellite + Streets</string>
 </resources>
