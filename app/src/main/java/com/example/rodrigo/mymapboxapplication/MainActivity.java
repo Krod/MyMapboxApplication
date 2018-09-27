@@ -109,7 +109,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.menu_streets).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.findItem(R.id.menu_dark).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.findItem(R.id.menu_light).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.findItem(R.id.menu_outdoors).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.findItem(R.id.menu_satellite).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.findItem(R.id.menu_satellite_streets).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     // Handle item selection
         switch (item.getItemId()) {
             case R.id.menu_streets:
