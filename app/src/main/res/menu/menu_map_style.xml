@@ -7,22 +7,22 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_dark"
-        app:showAsAction="never"
-        android:title="@string/menu_dark" />
+        android:title="@string/menu_dark"
+        app:showAsAction="never" />
     <item
         android:id="@+id/menu_light"
-        app:showAsAction="never"
-        android:title="@string/menu_light" />
+        android:title="@string/menu_light"
+        app:showAsAction="never" />
     <item
         android:id="@+id/menu_outdoors"
-        app:showAsAction="never"
-        android:title="@string/menu_outdoors" />
+        android:title="@string/menu_outdoors"
+        app:showAsAction="never" />
     <item
         android:id="@+id/menu_satellite"
-        app:showAsAction="never"
-        android:title="@string/menu_satellite" />
+        android:title="@string/menu_satellite"
+        app:showAsAction="never" />
     <item
         android:id="@+id/menu_satellite_streets"
-        app:showAsAction="never"
-        android:title="@string/menu_satellitestreets" />
+        android:title="@string/menu_satellitestreets"
+        app:showAsAction="never" />
 </menu>
