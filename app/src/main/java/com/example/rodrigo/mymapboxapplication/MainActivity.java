@@ -5,10 +5,12 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.constants.Style;
@@ -16,13 +18,23 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private MapView mapView;
     private MapboxMap mapboxMap;
-
-    Button button;
+    private TextView mTextViewResullt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +44,40 @@ public class MainActivity extends AppCompatActivity {
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
 
-        button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        mTextViewResullt = findViewById(R.id.text_view_result);
+
+        OkHttpClient client = new OkHttpClient();
+
+        String url = getString(R.string.url);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onClick(View view){
-                abrirCamera(view);
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()){
+                    String myResponse = response.body().string();
+
+                    try {
+                        JSONObject json = new JSONObject(myResponse);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTextViewResullt.setText(myResponse);
+                        }
+                    });
+                }
             }
         });
 
@@ -49,13 +90,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void abrirCamera(View view){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, 0);
-    }
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -123,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-    // Handle item selection
+        // Handle item selection
         switch (item.getItemId()) {
             case R.id.menu_streets:
                 mapboxMap.setStyleUrl(Style.MAPBOX_STREETS);

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">My Mapbox Application</string>
-    <string name="access_token">***REMOVED***</string>
     <string name="abrir_camera">Abrir Câmera</string>
     <string name="menu_streets">Streets</string>
     <string name="menu_dark">Dark</string>
