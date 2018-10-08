@@ -1,27 +1,30 @@
 package com.example.rodrigo.mymapboxapplication;
 
 import android.content.Intent;
-import android.provider.MediaStore;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.constants.Style;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -45,41 +48,6 @@ public class MainActivity extends AppCompatActivity {
         mapView.onCreate(savedInstanceState);
 
         mTextViewResullt = findViewById(R.id.text_view_result);
-
-        OkHttpClient client = new OkHttpClient();
-
-        String url = getString(R.string.url);
-
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()){
-                    String myResponse = response.body().string();
-
-                    try {
-                        JSONObject json = new JSONObject(myResponse);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    MainActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mTextViewResullt.setText(myResponse);
-                        }
-                    });
-                }
-            }
-        });
 
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -185,5 +153,70 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void getJson(String url){
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()){
+                    String myResponse = response.body().string();
+
+                    //Gson gson = new Gson();
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    FeatureCollection featureCollection = gson.fromJson(myResponse, FeatureCollection.class);
+
+                    String json = gson.toJson(featureCollection);
+
+                    ArrayList<MarkerOptions> markerOptionsList = new ArrayList<>();
+                    ArrayList<LatLng> latLngList = new ArrayList<>();
+                    LatLng latLng;
+
+                    for(int i = 0; i < featureCollection.getFeatures().size(); i++) {
+                        latLng = new LatLng(
+                                featureCollection.getFeatures().get(i).getGeometry().getCoordinates().get(1),
+                                featureCollection.getFeatures().get(i).getGeometry().getCoordinates().get(0));
+
+                        markerOptionsList.add(new MarkerOptions()
+                                .position(latLng)
+                                .title(String.valueOf(featureCollection.getFeatures().get(i).getProperties().getID()))
+                        );
+
+                        latLngList.add(latLng);
+                    }
+
+                    LatLngBounds latLngBounds = new LatLngBounds.Builder()
+                            .includes(latLngList)
+                            .build();
+                    CameraUpdateFactory.newLatLngBounds(latLngBounds, 10);
+
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTextViewResullt.setText(json);
+                            mapboxMap.clear();
+                            mapboxMap.addMarkers(markerOptionsList);
+                            mapboxMap.easeCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50), 2000);
+
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public void loadJson(View view) {
+        getJson(getString(R.string.url));
     }
 }
